@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\Users\turbou\Desktop\CSVDLTool_work\common\AdminTool-1.0.0.jar</jar>
-  <outfile>C:\Users\turbou\Desktop\CSVDLTool_work\common\AdminTool_1.0.0.exe</outfile>
+  <jar>C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool-1.0.0.jar</jar>
+  <outfile>C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool_1.0.0.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\turbou\Desktop\CSVDLTool_work\contrastsecurity.ico</icon>
+  <icon>C:\Users\turbou\Desktop\AdminTool_work\contrastsecurity.ico</icon>
   <jre>
     <path>jre</path>
     <bundledJre64Bit>false</bundledJre64Bit>

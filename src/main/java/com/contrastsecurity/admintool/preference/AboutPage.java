@@ -43,7 +43,7 @@ import com.contrastsecurity.admintool.Messages;
 public class AboutPage extends PreferencePage {
 
     public AboutPage() {
-        super(Messages.getString("aboutpage.about_csvdltool")); //$NON-NLS-1$
+        super(Messages.getString("aboutpage.about_admintool")); //$NON-NLS-1$
     }
 
     @Override
