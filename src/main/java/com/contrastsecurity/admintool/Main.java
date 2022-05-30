@@ -606,6 +606,8 @@ public class Main implements PropertyChangeListener {
 
         Group appListGrp = new Group(exBtnGrp, SWT.NONE);
         GridLayout appListGrpLt = new GridLayout(3, false);
+        appListGrpLt.marginHeight = 0;
+        appListGrpLt.verticalSpacing = 0;
         appListGrp.setLayout(appListGrpLt);
         GridData appListGrpGrDt = new GridData(GridData.FILL_BOTH);
         appListGrpGrDt.horizontalSpan = 2;
@@ -735,22 +737,25 @@ public class Main implements PropertyChangeListener {
         srcListLblLt.marginHeight = 0;
         srcListLblLt.marginWidth = 0;
         srcListLblLt.marginLeft = 5;
+        srcListLblLt.marginBottom = 0;
         srcListLblComp.setLayout(srcListLblLt);
         srcListLblComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Label srcListDescLbl = new Label(srcListLblComp, SWT.LEFT);
         GridData srcListDescLblGrDt = new GridData(GridData.FILL_HORIZONTAL);
-        srcListDescLblGrDt.minimumHeight = 20;
-        srcListDescLblGrDt.heightHint = 20;
+        srcListDescLblGrDt.minimumHeight = 12;
+        srcListDescLblGrDt.heightHint = 12;
         srcListDescLbl.setLayoutData(srcListDescLblGrDt);
         srcListDescLbl.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
         srcListDescLbl.setText("選択可能なアプリケーション一覧");
+        srcListDescLbl.setForeground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
         this.srcCount = new Label(srcListLblComp, SWT.RIGHT);
         GridData srcCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
-        srcCountGrDt.minimumHeight = 20;
-        srcCountGrDt.heightHint = 20;
+        srcCountGrDt.minimumHeight = 12;
+        srcCountGrDt.heightHint = 12;
         this.srcCount.setLayoutData(srcCountGrDt);
         this.srcCount.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
         this.srcCount.setText("0");
+        this.srcCount.setForeground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
         Composite btnGrp = new Composite(appListGrp, SWT.NONE);
         btnGrp.setLayout(new GridLayout(1, false));
@@ -913,22 +918,25 @@ public class Main implements PropertyChangeListener {
         dstListLblLt.marginHeight = 0;
         dstListLblLt.marginWidth = 0;
         dstListLblLt.marginLeft = 5;
+        dstListLblLt.marginBottom = 0;
         dstListLblComp.setLayout(dstListLblLt);
         dstListLblComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Label dstListDescLbl = new Label(dstListLblComp, SWT.LEFT);
         GridData dstListDescLblGrDt = new GridData(GridData.FILL_HORIZONTAL);
-        dstListDescLblGrDt.minimumHeight = 20;
-        dstListDescLblGrDt.heightHint = 20;
+        dstListDescLblGrDt.minimumHeight = 12;
+        dstListDescLblGrDt.heightHint = 12;
         dstListDescLbl.setLayoutData(dstListDescLblGrDt);
         dstListDescLbl.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
         dstListDescLbl.setText("選択済みのアプリケーション一覧");
+        dstListDescLbl.setForeground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
         this.dstCount = new Label(dstListLblComp, SWT.RIGHT);
         GridData dstCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
-        dstCountGrDt.minimumHeight = 20;
-        dstCountGrDt.heightHint = 20;
+        dstCountGrDt.minimumHeight = 12;
+        dstCountGrDt.heightHint = 12;
         this.dstCount.setLayoutData(dstCountGrDt);
         this.dstCount.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
         this.dstCount.setText("0");
+        this.dstCount.setForeground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
         // ========== エクスポートボタン ==========
         exExpBtn = new Button(exBtnGrp, SWT.PUSH);
