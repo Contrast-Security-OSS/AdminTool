@@ -605,7 +605,8 @@ public class Main implements PropertyChangeListener {
         exBtnGrp.setLayoutData(exBtnGrpGrDt);
 
         Group appListGrp = new Group(exBtnGrp, SWT.NONE);
-        appListGrp.setLayout(new GridLayout(3, false));
+        GridLayout appListGrpLt = new GridLayout(3, false);
+        appListGrp.setLayout(appListGrpLt);
         GridData appListGrpGrDt = new GridData(GridData.FILL_BOTH);
         appListGrpGrDt.horizontalSpan = 2;
         appListGrpGrDt.minimumHeight = 200;
@@ -729,7 +730,21 @@ public class Main implements PropertyChangeListener {
             }
         });
 
-        this.srcCount = new Label(srcGrp, SWT.RIGHT);
+        Composite srcListLblComp = new Composite(srcGrp, SWT.NONE);
+        GridLayout srcListLblLt = new GridLayout(2, false);
+        srcListLblLt.marginHeight = 0;
+        srcListLblLt.marginWidth = 0;
+        srcListLblLt.marginLeft = 5;
+        srcListLblComp.setLayout(srcListLblLt);
+        srcListLblComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Label srcListDescLbl = new Label(srcListLblComp, SWT.LEFT);
+        GridData srcListDescLblGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        srcListDescLblGrDt.minimumHeight = 20;
+        srcListDescLblGrDt.heightHint = 20;
+        srcListDescLbl.setLayoutData(srcListDescLblGrDt);
+        srcListDescLbl.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
+        srcListDescLbl.setText("選択可能なアプリケーション一覧");
+        this.srcCount = new Label(srcListLblComp, SWT.RIGHT);
         GridData srcCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
         srcCountGrDt.minimumHeight = 20;
         srcCountGrDt.heightHint = 20;
@@ -893,7 +908,21 @@ public class Main implements PropertyChangeListener {
             }
         });
 
-        this.dstCount = new Label(dstGrp, SWT.RIGHT);
+        Composite dstListLblComp = new Composite(dstGrp, SWT.NONE);
+        GridLayout dstListLblLt = new GridLayout(2, false);
+        dstListLblLt.marginHeight = 0;
+        dstListLblLt.marginWidth = 0;
+        dstListLblLt.marginLeft = 5;
+        dstListLblComp.setLayout(dstListLblLt);
+        dstListLblComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Label dstListDescLbl = new Label(dstListLblComp, SWT.LEFT);
+        GridData dstListDescLblGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        dstListDescLblGrDt.minimumHeight = 20;
+        dstListDescLblGrDt.heightHint = 20;
+        dstListDescLbl.setLayoutData(dstListDescLblGrDt);
+        dstListDescLbl.setFont(new Font(display, "ＭＳ ゴシック", 8, SWT.NORMAL));
+        dstListDescLbl.setText("選択済みのアプリケーション一覧");
+        this.dstCount = new Label(dstListLblComp, SWT.RIGHT);
         GridData dstCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
         dstCountGrDt.minimumHeight = 20;
         dstCountGrDt.heightHint = 20;
