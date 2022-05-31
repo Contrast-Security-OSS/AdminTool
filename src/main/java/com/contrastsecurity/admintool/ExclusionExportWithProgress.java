@@ -40,10 +40,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.contrastsecurity.admintool.api.Api;
 import com.contrastsecurity.admintool.api.ExclusionsApi;
-import com.contrastsecurity.admintool.json.RuleSerializer;
+import com.contrastsecurity.admintool.json.AssessmentRuleSerializer;
+import com.contrastsecurity.admintool.model.AssessmentRule;
 import com.contrastsecurity.admintool.model.Exclusion;
 import com.contrastsecurity.admintool.model.Organization;
-import com.contrastsecurity.admintool.model.Rule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -70,7 +70,7 @@ public class ExclusionExportWithProgress implements IRunnableWithProgress {
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         monitor.beginTask("例外のエクスポート...", 100 * dstApps.size());
         Thread.sleep(300);
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Rule.class, new RuleSerializer()).setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(AssessmentRule.class, new AssessmentRuleSerializer()).setPrettyPrinting().create();
         Organization org = fullAppMap.values().iterator().next().getOrganization();
         try {
             int appIdx = 1;
