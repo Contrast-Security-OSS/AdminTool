@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
-version = '1.0.0'
+version = '1.0.1'
 
 def defaultEncoding = 'UTF-8'
     tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }

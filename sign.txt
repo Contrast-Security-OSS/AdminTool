@@ -1,6 +1,6 @@
-keytool -list -v -storetype pkcs12 -keystore C:\Users\turbou\Desktop\AdminTool_work\XXXXX.pfx
-[ƒpƒXƒ[ƒh]‚ğ“ü—Í
-ƒGƒCƒŠƒAƒX‚ğŠm”F
+ï»¿keytool -list -v -storetype pkcs12 -keystore C:\Users\turbou\Desktop\AdminTool_work\XXXXX.pfx
+[ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰]ã‚’å…¥åŠ›
+ã‚¨ã‚¤ãƒªã‚¢ã‚¹ã‚’ç¢ºèª
 
 cd C:\Program Files (x86)\launch4j\sign4j
-sign4j.exe java -jar jsign-2.0.jar --alias 1 --keystore C:\Users\turbou\Desktop\AdminTool_work\contrast-code.pfx --storepass [ƒpƒXƒ[ƒh] C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool_1.0.0.exe
+sign4j.exe java -jar jsign-2.0.jar --alias 1 --keystore C:\Users\turbou\Desktop\AdminTool_work\contrast-code.pfx --storepass [ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰] C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool_1.0.1.exe
