@@ -174,7 +174,7 @@ public class ExclusionCreateApi extends Api {
         Type contType = new TypeToken<ContrastJson>() {
         }.getType();
         ContrastJson contrastJson = gson.fromJson(response, contType);
-        return contrastJson.getSuccess();
+        return contrastJson;
     }
 
 }

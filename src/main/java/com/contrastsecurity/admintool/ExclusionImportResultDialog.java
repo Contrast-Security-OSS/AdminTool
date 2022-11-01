@@ -24,6 +24,7 @@
 package com.contrastsecurity.admintool;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -99,9 +100,15 @@ public class ExclusionImportResultDialog extends Dialog {
         TableColumn column2 = new TableColumn(failedControlsTable, SWT.CENTER);
         column2.setWidth(100);
         column2.setText("種類");
-        TableColumn column3 = new TableColumn(failedControlsTable, SWT.LEFT);
-        column3.setWidth(250);
-        column3.setText("備考");
+        TableColumn column3 = new TableColumn(failedControlsTable, SWT.CENTER);
+        column3.setWidth(200);
+        column3.setText("Assessルール");
+        TableColumn column4 = new TableColumn(failedControlsTable, SWT.CENTER);
+        column4.setWidth(200);
+        column4.setText("Protectルール");
+        TableColumn column5 = new TableColumn(failedControlsTable, SWT.LEFT);
+        column5.setWidth(250);
+        column5.setText("備考");
 
         failureExclusions.forEach(sc -> addColToControlTable(sc, -1));
 
@@ -136,7 +143,22 @@ public class ExclusionImportResultDialog extends Dialog {
         editor.horizontalAlignment = SWT.LEFT;
         editor.setEditor(text, item, 1);
         item.setText(2, exclusion.getType());
-        item.setText(3, exclusion.getRemarks());
+        if (exclusion.isAll_rules()) {
+            item.setText(3, "ALL");
+            item.setText(4, "ALL");
+        } else {
+            if (exclusion.isAll_assessment_rules() || exclusion.getAssessment_rules().isEmpty()) {
+                item.setText(3, "ALL");
+            } else {
+                item.setText(3, String.join(", ", exclusion.getAssessment_rules().stream().map(r -> r.getName()).collect(Collectors.toList())));
+            }
+            if (exclusion.isAll_protection_rules() || exclusion.getProtection_rules().isEmpty()) {
+                item.setText(4, "ALL");
+            } else {
+                item.setText(4, String.join(", ", exclusion.getProtection_rules().stream().map(r -> r.getUuid()).collect(Collectors.toList())));
+            }
+        }
+        item.setText(5, exclusion.getRemarks());
     }
 
     @Override

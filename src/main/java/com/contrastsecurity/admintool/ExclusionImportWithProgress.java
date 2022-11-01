@@ -45,6 +45,7 @@ import com.contrastsecurity.admintool.api.ExclusionCreateApi;
 import com.contrastsecurity.admintool.exception.ApiException;
 import com.contrastsecurity.admintool.exception.JsonException;
 import com.contrastsecurity.admintool.json.AssessmentRuleDeserializer;
+import com.contrastsecurity.admintool.json.ContrastJson;
 import com.contrastsecurity.admintool.json.ProtectionRuleDeserializer;
 import com.contrastsecurity.admintool.model.AssessmentRule;
 import com.contrastsecurity.admintool.model.Exclusion;
@@ -120,10 +121,11 @@ public class ExclusionImportWithProgress implements IRunnableWithProgress {
                 Api api = null;
                 try {
                     api = new ExclusionCreateApi(shell, this.ps, org, appId, exclusion);
-                    String msg = (String) api.post();
-                    if (Boolean.valueOf(msg)) {
+                    ContrastJson json = (ContrastJson) api.post();
+                    if (Boolean.valueOf(json.getSuccess())) {
                         this.successControls.add(exclusion);
                     } else {
+                        exclusion.setRemarks(json.getErrors().toString());
                         this.failureControls.add(exclusion);
                     }
                 } catch (JsonException je) {

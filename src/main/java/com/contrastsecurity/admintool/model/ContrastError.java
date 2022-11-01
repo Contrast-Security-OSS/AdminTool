@@ -21,62 +21,26 @@
  * 
  */
 
-package com.contrastsecurity.admintool.json;
+package com.contrastsecurity.admintool.model;
 
-import java.util.List;
+public class ContrastError {
+    private String field;
+    private String message;
 
-import com.contrastsecurity.admintool.model.ContrastError;
-
-public class ContrastJson {
-    private String success;
-    private List<String> messages;
-    private List<ContrastError> errors;
-    private int count;
-    private String type;
-
-    public String getSuccess() {
-        return success;
+    public String getField() {
+        return field;
     }
 
-    public void setSuccess(String success) {
-        this.success = success;
+    public void setField(String field) {
+        this.field = field;
     }
 
-    public List<String> getMessages() {
-        return messages;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
-    }
-
-    public List<ContrastError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<ContrastError> errors) {
-        this.errors = errors;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s - %s", this.success, this.messages);
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
