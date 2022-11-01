@@ -1203,6 +1203,8 @@ public class Main implements PropertyChangeListener {
                     map1.put("protection_rules", Arrays.asList(new String[0]));
                     map1.put("input_name", "");
                     map1.put("input_type", "");
+                    map1.put("queue_pattern_type", "ALL");
+                    map1.put("queues", new ArrayList<String>());
                     mapList.add(map1);
 
                     Map<String, Object> map2 = new HashMap<String, Object>();
@@ -1217,6 +1219,8 @@ public class Main implements PropertyChangeListener {
                     map2.put("input_name", "");
                     map2.put("input_type", "");
                     map2.put("url_pattern_type", "ONLY");
+                    map2.put("queue_pattern_type", "ALL");
+                    map2.put("queues", new ArrayList<String>());
                     mapList.add(map2);
 
                     Map<String, Object> map3 = new HashMap<String, Object>();
@@ -1231,6 +1235,8 @@ public class Main implements PropertyChangeListener {
                     map3.put("input_name", "");
                     map3.put("input_type", "");
                     map3.put("url_pattern_type", "ONLY");
+                    map3.put("queue_pattern_type", "ALL");
+                    map3.put("queues", new ArrayList<String>());
 
                     mapList.add(map3);
                     gson.toJson(mapList, writer);
