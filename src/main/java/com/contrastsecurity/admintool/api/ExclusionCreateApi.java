@@ -161,6 +161,8 @@ public class ExclusionCreateApi extends Api {
                 map.put("protection_rules", protectionRules);
             }
         }
+        map.put("queue_pattern_type", "ALL");
+        map.put("queues", new ArrayList<String>());
         Gson gson = new Gson();
         String json = gson.toJson(map);
         return RequestBody.create(json, mediaTypeJson);
