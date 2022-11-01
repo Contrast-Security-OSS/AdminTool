@@ -312,6 +312,8 @@ public abstract class Api {
                     throw new ApiException(response.body().string(), response.code());
                 } else if (response.code() == 403) {
                     throw new ApiException(response.body().string(), response.code());
+                } else if (response.code() == 500) {
+                    throw new ApiException(String.format("Contrast Securityまでご連絡ください。 %s", response.body().string()), response.code());
                 } else {
                     logger.warn(response.code());
                     logger.warn(response.body().string());
