@@ -295,6 +295,11 @@ public class Exclusion {
             Collections.sort(this.protection_rules);
             strList.add("protection_rules: " + String.join(", ", this.protection_rules.stream().map(r -> r.getUuid()).collect(Collectors.toList())));
         }
+        strList.add("queue_pattern_type: " + this.queue_pattern_type);
+        if (this.queues != null && !this.queues.isEmpty()) {
+            Collections.sort(this.queues);
+            strList.add("queues: " + String.join(", ", this.queues));
+        }
         return String.join(", ", strList);
     }
 
