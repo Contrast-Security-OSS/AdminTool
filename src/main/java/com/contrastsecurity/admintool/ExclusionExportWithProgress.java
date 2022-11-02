@@ -26,6 +26,7 @@ package com.contrastsecurity.admintool;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class ExclusionExportWithProgress implements IRunnableWithProgress {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(AssessmentRule.class, new AssessmentRuleSerializer())
                 .registerTypeAdapter(ProtectionRule.class, new ProtectionRuleSerializer()).setPrettyPrinting().create();
         Organization org = fullAppMap.values().iterator().next().getOrganization();
+        List<String> outputFileNames = new ArrayList<String>();
         try {
             int appIdx = 1;
             for (String appLabel : dstApps) {
@@ -98,9 +100,11 @@ public class ExclusionExportWithProgress implements IRunnableWithProgress {
                     continue;
                 }
                 Thread.sleep(1000);
-                Writer writer = new FileWriter(dirPath + "\\" + org.getName() + "_" + appName + ".json");
+                String fileName = org.getName() + "_" + appName + ".json";
+                Writer writer = new FileWriter(dirPath + "\\" + fileName);
                 gson.toJson(exclusions, writer);
                 writer.close();
+                outputFileNames.add(fileName);
                 sub2Monitor.worked(1);
                 sub2Monitor.done();
                 Thread.sleep(500);
@@ -111,10 +115,19 @@ public class ExclusionExportWithProgress implements IRunnableWithProgress {
             throw new InvocationTargetException(e);
         }
         monitor.done();
-        this.shell.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                MessageDialog.openInformation(shell, String.format("例外のエクスポート - %s", org.getName()), String.format("JSONファイルを出力しました。\r\n%s", dirPath));
-            }
-        });
+        if (outputFileNames.isEmpty()) {
+            this.shell.getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    MessageDialog.openInformation(shell, String.format("例外のエクスポート - %s", org.getName()), "エクスポートできる例外がありません。");
+                }
+            });
+        } else {
+            this.shell.getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    MessageDialog.openInformation(shell, String.format("例外のエクスポート - %s", org.getName()),
+                            String.format("JSONファイルを出力しました。\r\n%s\r\n", dirPath, String.join("\r\n", outputFileNames)));
+                }
+            });
+        }
     }
 }
