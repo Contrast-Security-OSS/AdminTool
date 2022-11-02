@@ -122,16 +122,6 @@ public class ExclusionCompareWithProgress implements IRunnableWithProgress {
         List<String> expExclusionStrs = expExclusions.stream().map(ex -> ex.toString()).collect(Collectors.toList());
         List<String> problemStrs = new ArrayList<String>();
         for (String str : impExclusionStrs) {
-            if (str.contains("IM-AccelPlatform-2022Spring-CRYPTOBADCIPHERS-System-00001")) {
-                System.out.println(str);
-            }
-        }
-        for (String str : expExclusionStrs) {
-            if (str.contains("IM-AccelPlatform-2022Spring-CRYPTOBADCIPHERS-System-00001")) {
-                System.out.println(str);
-            }
-        }
-        for (String str : impExclusionStrs) {
             if (!expExclusionStrs.contains(str)) {
                 problemStrs.add(str);
             }

@@ -47,6 +47,7 @@ public class ExclusionCompareResultDialog extends Dialog {
 
     private List<String> problemStrs;
     private Table table;
+    private Label diffCount;
 
     public ExclusionCompareResultDialog(Shell parentShell, List<String> problemStrs) {
         super(parentShell);
@@ -65,6 +66,12 @@ public class ExclusionCompareResultDialog extends Dialog {
         Label descLbl = new Label(composite, SWT.LEFT);
         descLbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         descLbl.setText("※ 例外の名前が一致しないだけでなく、設定内容に差異がある場合も一覧に表示されます。");
+
+        this.diffCount = new Label(composite, SWT.RIGHT);
+        GridData srcCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        srcCountGrDt.horizontalAlignment = SWT.RIGHT;
+        this.diffCount.setLayoutData(srcCountGrDt);
+        this.diffCount.setText(String.format("%d", problemStrs.size()));
 
         table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         GridData tableGrDt = new GridData(GridData.FILL_BOTH);
