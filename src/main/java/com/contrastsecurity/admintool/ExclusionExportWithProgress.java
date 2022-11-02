@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,7 +126,7 @@ public class ExclusionExportWithProgress implements IRunnableWithProgress {
             this.shell.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     MessageDialog.openInformation(shell, String.format("例外のエクスポート - %s", org.getName()),
-                            String.format("JSONファイルを出力しました。\r\n%s\r\n", dirPath, String.join("\r\n", outputFileNames)));
+                            String.format("JSONファイルを出力しました。\r\n%s\r\n%s", dirPath, outputFileNames.stream().collect(Collectors.joining("\r\n", "- ", ""))));
                 }
             });
         }
