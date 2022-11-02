@@ -32,6 +32,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Exclusion {
+
+    public Exclusion() {
+        this.assessment_rules = new ArrayList<AssessmentRule>();
+        this.protection_rules = new ArrayList<ProtectionRule>();
+        this.queues = new ArrayList<String>();
+    }
+
     @Expose(serialize = true)
     private String name;
 
@@ -182,9 +189,6 @@ public class Exclusion {
     }
 
     public List<AssessmentRule> getAssessment_rules() {
-        if (this.assessment_rules == null) {
-            return new ArrayList<AssessmentRule>();
-        }
         return assessment_rules;
     }
 
@@ -193,9 +197,6 @@ public class Exclusion {
     }
 
     public List<ProtectionRule> getProtection_rules() {
-        if (this.protection_rules == null) {
-            return new ArrayList<ProtectionRule>();
-        }
         return protection_rules;
     }
 
@@ -228,9 +229,6 @@ public class Exclusion {
     }
 
     public List<String> getQueues() {
-        if (this.queues == null) {
-            return new ArrayList<String>();
-        }
         return queues;
     }
 
@@ -304,7 +302,7 @@ public class Exclusion {
             Collections.sort(this.protection_rules);
             strList.add("protection_rules: " + String.join(", ", this.protection_rules.stream().map(r -> r.getUuid()).collect(Collectors.toList())));
         }
-        strList.add("queue_pattern_type: " + this.queue_pattern_type);
+        strList.add("queue_pattern_type: " + (this.queue_pattern_type != null ? this.queue_pattern_type : "ALL"));
         if (this.queues != null && !this.queues.isEmpty()) {
             Collections.sort(this.queues);
             strList.add("queues: " + String.join(", ", this.queues));
