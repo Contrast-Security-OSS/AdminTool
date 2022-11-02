@@ -78,6 +78,12 @@ public class Exclusion {
     @Expose(serialize = true)
     private List<ProtectionRule> protection_rules;
 
+    @Expose(serialize = true)
+    private String queue_pattern_type;
+
+    @Expose(serialize = true)
+    private List<String> queues;
+
     @Expose(serialize = false)
     private String replaceBef;
     @Expose(serialize = false)
@@ -205,6 +211,22 @@ public class Exclusion {
 
     public void setAll_protection_rules(boolean all_protection_rules) {
         this.all_protection_rules = all_protection_rules;
+    }
+
+    public String getQueue_pattern_type() {
+        return queue_pattern_type;
+    }
+
+    public void setQueue_pattern_type(String queue_pattern_type) {
+        this.queue_pattern_type = queue_pattern_type;
+    }
+
+    public List<String> getQueues() {
+        return queues;
+    }
+
+    public void setQueues(List<String> queues) {
+        this.queues = queues;
     }
 
     public String getReplaceBef() {
