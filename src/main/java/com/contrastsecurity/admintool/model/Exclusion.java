@@ -182,6 +182,9 @@ public class Exclusion {
     }
 
     public List<AssessmentRule> getAssessment_rules() {
+        if (this.assessment_rules == null) {
+            return new ArrayList<AssessmentRule>();
+        }
         return assessment_rules;
     }
 
@@ -190,6 +193,9 @@ public class Exclusion {
     }
 
     public List<ProtectionRule> getProtection_rules() {
+        if (this.protection_rules == null) {
+            return new ArrayList<ProtectionRule>();
+        }
         return protection_rules;
     }
 
@@ -222,6 +228,9 @@ public class Exclusion {
     }
 
     public List<String> getQueues() {
+        if (this.queues == null) {
+            return new ArrayList<String>();
+        }
         return queues;
     }
 
