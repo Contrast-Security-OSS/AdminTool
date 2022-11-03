@@ -29,11 +29,13 @@ public class AppInfo {
     private Organization organization;
     private String appName;
     private String appId;
+    private String languageLabel;
 
-    public AppInfo(Organization organization, String appName, String appId) {
+    public AppInfo(Organization organization, String appName, String appId, String languageLabel) {
         this.organization = organization;
         this.appName = appName;
         this.appId = appId;
+        this.languageLabel = languageLabel;
     }
 
     public Organization getOrganization() {
@@ -58,6 +60,14 @@ public class AppInfo {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getLanguageLabel() {
+        return languageLabel;
+    }
+
+    public void setLanguageLabel(String languageLabel) {
+        this.languageLabel = languageLabel;
     }
 
 }
