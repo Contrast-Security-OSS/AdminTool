@@ -108,9 +108,12 @@ public class ControlCompareWithProgress implements IRunnableWithProgress {
         List<String> impControlStrs = impControls.stream().map(sc -> sc.toString()).collect(Collectors.toList());
         List<String> expControlStrs = expControls.stream().map(sc -> sc.toString()).collect(Collectors.toList());
         List<String> problemStrs = new ArrayList<String>();
-        for (String str : impControlStrs) {
+        List<SecurityControl> problemControls = new ArrayList<SecurityControl>();
+        for (int i = 0; i < impControlStrs.size(); i++) {
+            String str = impControlStrs.get(i);
             if (!expControlStrs.contains(str)) {
                 problemStrs.add(str);
+                problemControls.add(impControls.get(i));
             }
         }
 
@@ -121,7 +124,7 @@ public class ControlCompareWithProgress implements IRunnableWithProgress {
                 }
             });
         } else {
-            ControlCompareResultDialog dialog = new ControlCompareResultDialog(shell, problemStrs);
+            ControlCompareResultDialog dialog = new ControlCompareResultDialog(shell, org, problemStrs, problemControls);
             this.shell.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     int result = dialog.open();

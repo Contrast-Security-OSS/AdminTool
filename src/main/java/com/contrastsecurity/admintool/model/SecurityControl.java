@@ -147,6 +147,22 @@ public class SecurityControl {
         this.remarks = remarks;
     }
 
+    public List<String> getCsvValues() {
+        List<String> csvValues = new ArrayList<String>();
+        csvValues.add(this.name);
+        csvValues.add(this.language);
+        csvValues.add(this.type);
+        csvValues.add(this.api);
+        csvValues.add(String.valueOf(this.all_rules));
+        if (this.rules != null && !this.rules.isEmpty()) {
+            Collections.sort(this.rules);
+            csvValues.add(String.join(", ", this.rules.stream().map(rule -> rule.getName()).collect(Collectors.toList())));
+        } else {
+            csvValues.add("");
+        }
+        return csvValues;
+    }
+
     @Override
     public String toString() {
         List<String> strList = new ArrayList<String>();

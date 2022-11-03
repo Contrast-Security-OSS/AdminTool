@@ -23,30 +23,54 @@
 
 package com.contrastsecurity.admintool;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.exec.OS;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.contrastsecurity.admintool.model.Organization;
+import com.contrastsecurity.admintool.model.SecurityControl;
+
 public class ControlCompareResultDialog extends Dialog {
 
+    private Organization org;
     private List<String> problemStrs;
+    private List<SecurityControl> problemControls;
     private Table table;
+    private Label diffCount;
+    private Button csvExpBtn;
 
-    public ControlCompareResultDialog(Shell parentShell, List<String> problemStrs) {
+    public ControlCompareResultDialog(Shell parentShell, Organization org, List<String> problemStrs, List<SecurityControl> problemControls) {
         super(parentShell);
+        this.org = org;
         this.problemStrs = problemStrs;
+        this.problemControls = problemControls;
     }
 
     @Override
@@ -62,6 +86,12 @@ public class ControlCompareResultDialog extends Dialog {
         descLbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         descLbl.setText("※ セキュリティ制御の名前が一致しないだけでなく、設定内容に差異がある場合も一覧に表示されます。");
 
+        this.diffCount = new Label(composite, SWT.RIGHT);
+        GridData srcCountGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        srcCountGrDt.horizontalAlignment = SWT.RIGHT;
+        this.diffCount.setLayoutData(srcCountGrDt);
+        this.diffCount.setText(String.format("%d", problemStrs.size()));
+
         table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         GridData tableGrDt = new GridData(GridData.FILL_BOTH);
         table.setLayoutData(tableGrDt);
@@ -75,6 +105,46 @@ public class ControlCompareResultDialog extends Dialog {
         column1.setText("存在しないセキュリティ制御");
 
         problemStrs.forEach(str -> addColToTable(str, -1));
+
+        csvExpBtn = new Button(composite, SWT.PUSH);
+        GridData csvExpBtnGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        csvExpBtn.setLayoutData(csvExpBtnGrDt);
+        csvExpBtn.setText("CSVエクスポート");
+        csvExpBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dialog = new DirectoryDialog(getShell());
+                dialog.setText("出力先フォルダを指定してください。");
+                String dir = dialog.open();
+                if (dir == null) {
+                    return;
+                }
+                String fileName = org.getName() + "_diff.csv";
+                List<List<String>> csvList = new ArrayList<List<String>>();
+                for (SecurityControl sc : problemControls) {
+                    csvList.add(sc.getCsvValues());
+                }
+                String csv_encoding = Main.CSV_WIN_ENCODING;
+                if (OS.isFamilyMac()) {
+                    csv_encoding = Main.CSV_MAC_ENCODING;
+                }
+                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir + "\\" + fileName)), csv_encoding))) {
+                    CSVPrinter printer = CSVFormat.EXCEL.print(bw);
+                    String[] headerArray = { "name", "language", "type", "api", "all_rules", "rules" };
+                    printer.printRecord(Arrays.asList(headerArray));
+                    for (List<String> csvLine : csvList) {
+                        printer.printRecord(csvLine);
+                    }
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                getShell().getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        MessageDialog.openInformation(getShell(), "セキュリティ制御のインポート済み確認結果", String.format("CSVファイルを出力しました。\r\n%s", dir + "\\" + fileName));
+                    }
+                });
+            }
+        });
 
         return composite;
     }
