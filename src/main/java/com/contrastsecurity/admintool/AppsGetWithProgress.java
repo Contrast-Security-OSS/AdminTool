@@ -27,8 +27,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +48,7 @@ import com.contrastsecurity.admintool.exception.ApiException;
 import com.contrastsecurity.admintool.model.Application;
 import com.contrastsecurity.admintool.model.ApplicationInCustomGroup;
 import com.contrastsecurity.admintool.model.CustomGroup;
+import com.contrastsecurity.admintool.model.Filter;
 import com.contrastsecurity.admintool.model.Organization;
 
 public class AppsGetWithProgress implements IRunnableWithProgress {
@@ -54,6 +57,7 @@ public class AppsGetWithProgress implements IRunnableWithProgress {
     private PreferenceStore ps;
     private Organization org;
     private Map<String, AppInfo> fullAppMap;
+    private Set<Filter> languagesFilterSet = new LinkedHashSet<Filter>();
 
     Logger logger = LogManager.getLogger("admintool");
 
@@ -71,6 +75,21 @@ public class AppsGetWithProgress implements IRunnableWithProgress {
         Thread.sleep(300);
         try {
             monitor.setTaskName(this.org.getName());
+            // フィルタの情報を取得
+            // monitor.subTask("フィルタの情報を取得...");
+            // SubProgressMonitor sub1Monitor = new SubProgressMonitor(monitor, 10);
+            // sub1Monitor.beginTask("", 1);
+            // Api filterLanguagesApi = new FilterLanguagesApi(this.shell, this.ps, org);
+            // try {
+            // List<Filter> filterLanguages = (List<Filter>) filterLanguagesApi.get();
+            // for (Filter filter : filterLanguages) {
+            // languagesFilterSet.add(filter);
+            // }
+            // sub1Monitor.worked(1);
+            // } catch (ApiException ae) {
+            // throw ae;
+            // }
+            // sub1Monitor.done();
 
             // アプリケーショングループの情報を取得
             monitor.subTask("アプリケーショングループの情報を取得...");
@@ -78,8 +97,8 @@ public class AppsGetWithProgress implements IRunnableWithProgress {
             Api groupsApi = new GroupsApi(this.shell, this.ps, this.org);
             try {
                 List<CustomGroup> customGroups = (List<CustomGroup>) groupsApi.get();
-                SubProgressMonitor sub1Monitor = new SubProgressMonitor(monitor, 20);
-                sub1Monitor.beginTask("", customGroups.size());
+                SubProgressMonitor sub2Monitor = new SubProgressMonitor(monitor, 20);
+                sub2Monitor.beginTask("", customGroups.size());
                 for (CustomGroup customGroup : customGroups) {
                     monitor.subTask(String.format("アプリケーショングループの情報を取得...%s", customGroup.getName()));
                     List<ApplicationInCustomGroup> apps = customGroup.getApplications();
@@ -93,33 +112,33 @@ public class AppsGetWithProgress implements IRunnableWithProgress {
                             }
                         }
                     }
-                    sub1Monitor.worked(1);
+                    sub2Monitor.worked(1);
                 }
-                sub1Monitor.done();
+                sub2Monitor.done();
             } catch (ApiException ae) {
             }
             // アプリケーション一覧を取得
             monitor.subTask("アプリケーション一覧の情報を取得...");
             Api applicationsApi = new ApplicationsApi(this.shell, this.ps, this.org);
             List<Application> applications = (List<Application>) applicationsApi.get();
-            SubProgressMonitor sub2Monitor = new SubProgressMonitor(monitor, 80);
-            sub2Monitor.beginTask("", applications.size());
+            SubProgressMonitor sub3Monitor = new SubProgressMonitor(monitor, 80);
+            sub3Monitor.beginTask("", applications.size());
             for (Application app : applications) {
                 monitor.subTask(String.format("アプリケーション一覧の情報を取得...%s", app.getName()));
-                // if (app.getLicense().getLevel().equals("Unlicensed")) {
+                // if (app.getLicense ().getLevel().equals("Unlicensed")) {
                 // sub3Monitor.worked(1);
                 // continue;
                 // }
                 if (appGroupMap.containsKey(app.getName())) {
                     fullAppMap.put(String.format("%s - %s", app.getName(), String.join(", ", appGroupMap.get(app.getName()))),
-                            new AppInfo(this.org, app.getName(), app.getApp_id()));
+                            new AppInfo(this.org, app.getName(), app.getApp_id(), app.getLanguage()));
                 } else {
-                    fullAppMap.put(String.format("%s", app.getName()), new AppInfo(this.org, app.getName(), app.getApp_id()));
+                    fullAppMap.put(String.format("%s", app.getName()), new AppInfo(this.org, app.getName(), app.getApp_id(), app.getLanguage()));
                 }
-                sub2Monitor.worked(1);
+                sub3Monitor.worked(1);
                 Thread.sleep(10);
             }
-            sub2Monitor.done();
+            sub3Monitor.done();
             Thread.sleep(500);
         } catch (Exception e) {
             throw new InvocationTargetException(e);
@@ -131,4 +150,9 @@ public class AppsGetWithProgress implements IRunnableWithProgress {
         return fullAppMap;
     }
 
+    public Map<FilterEnum, Set<Filter>> getFilterMap() {
+        Map<FilterEnum, Set<Filter>> filterMap = new HashMap<FilterEnum, Set<Filter>>();
+        filterMap.put(FilterEnum.LANGUAGE, languagesFilterSet);
+        return filterMap;
+    }
 }

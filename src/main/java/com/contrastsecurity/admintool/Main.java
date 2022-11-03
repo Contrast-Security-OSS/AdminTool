@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -90,6 +91,7 @@ import com.contrastsecurity.admintool.exception.NonApiException;
 import com.contrastsecurity.admintool.exception.TsvException;
 import com.contrastsecurity.admintool.model.AssessRulesConfiguration;
 import com.contrastsecurity.admintool.model.ContrastSecurityYaml;
+import com.contrastsecurity.admintool.model.Filter;
 import com.contrastsecurity.admintool.model.Organization;
 import com.contrastsecurity.admintool.model.ProtectionPolicy;
 import com.contrastsecurity.admintool.model.Rule;
@@ -131,12 +133,14 @@ public class Main implements PropertyChangeListener {
 
     private Button appLoadBtn;
     private Text srcListFilter;
+    private Text srcListLanguagesFilter;
     private Text dstListFilter;
     private org.eclipse.swt.widgets.List srcList;
     private org.eclipse.swt.widgets.List dstList;
     private Label srcCount;
     private Label dstCount;
     private Map<String, AppInfo> fullAppMap;
+    private Map<FilterEnum, Set<Filter>> filterMap;
     private List<String> srcApps = new ArrayList<String>();
     private List<String> dstApps = new ArrayList<String>();
 
@@ -668,11 +672,12 @@ public class Main implements PropertyChangeListener {
                     srcApps.add(appLabel); // memory src
                 }
                 srcCount.setText(String.valueOf(srcList.getItemCount()));
+                // filterMap = progress.getFilterMap();
             }
         });
 
         Composite srcGrp = new Composite(appListGrp, SWT.NONE);
-        srcGrp.setLayout(new GridLayout(1, false));
+        srcGrp.setLayout(new GridLayout(2, false));
         GridData srcGrpGrDt = new GridData(GridData.FILL_BOTH);
         srcGrp.setLayoutData(srcGrpGrDt);
 
@@ -682,38 +687,28 @@ public class Main implements PropertyChangeListener {
         srcListFilter.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent event) {
-                srcList.removeAll(); // UI List src
-                srcApps.clear(); // memory src
-                if (fullAppMap == null) {
-                    srcCount.setText(String.valueOf(srcList.getItemCount()));
-                    return;
-                }
-                String keyword = srcListFilter.getText();
-                if (keyword.isEmpty()) {
-                    for (String appLabel : fullAppMap.keySet()) {
-                        if (dstApps.contains(appLabel)) {
-                            continue; // 既に選択済みのアプリはスキップ
-                        }
-                        srcList.add(appLabel); // UI List src
-                        srcApps.add(appLabel); // memory src
-                    }
-                } else {
-                    for (String appLabel : fullAppMap.keySet()) {
-                        if (appLabel.toLowerCase().contains(keyword.toLowerCase())) {
-                            if (dstApps.contains(appLabel)) {
-                                continue; // 既に選択済みのアプリはスキップ
-                            }
-                            srcList.add(appLabel);
-                            srcApps.add(appLabel);
-                        }
-                    }
-                }
-                srcCount.setText(String.valueOf(srcList.getItemCount()));
+                srcListFilterUpdate();
                 uiUpdateForExclusionButton();
             }
         });
+
+        srcListLanguagesFilter = new Text(srcGrp, SWT.BORDER);
+        GridData srcListLanguagesFilterGrDt = new GridData();
+        srcListLanguagesFilterGrDt.widthHint = 40;
+        srcListLanguagesFilter.setLayoutData(srcListLanguagesFilterGrDt);
+        srcListLanguagesFilter.setMessage("言語...");
+        srcListLanguagesFilter.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(ModifyEvent event) {
+                srcListFilterUpdate();
+                uiUpdateForExclusionButton();
+            }
+        });
+
         this.srcList = new org.eclipse.swt.widgets.List(srcGrp, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-        this.srcList.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData srcListGrDt = new GridData(GridData.FILL_BOTH);
+        srcListGrDt.horizontalSpan = 2;
+        this.srcList.setLayoutData(srcListGrDt);
         this.srcList.setToolTipText("選択可能なアプリケーション一覧");
         this.srcList.addListener(SWT.MouseDoubleClick, new Listener() {
             @Override
@@ -739,7 +734,9 @@ public class Main implements PropertyChangeListener {
         srcListLblLt.marginLeft = 5;
         srcListLblLt.marginBottom = 0;
         srcListLblComp.setLayout(srcListLblLt);
-        srcListLblComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridData srcListLblCompGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        srcListLblCompGrDt.horizontalSpan = 2;
+        srcListLblComp.setLayoutData(srcListLblCompGrDt);
         Label srcListDescLbl = new Label(srcListLblComp, SWT.LEFT);
         GridData srcListDescLblGrDt = new GridData(GridData.FILL_HORIZONTAL);
         srcListDescLblGrDt.minimumHeight = 12;
@@ -1357,6 +1354,50 @@ public class Main implements PropertyChangeListener {
     }
 
     private void uiUpdate() {
+    }
+
+    private void srcListFilterUpdate() {
+        srcList.removeAll(); // UI List src
+        srcApps.clear(); // memory src
+        if (fullAppMap == null) {
+            srcCount.setText(String.valueOf(srcList.getItemCount()));
+            return;
+        }
+        String keyword = srcListFilter.getText().trim();
+        String language = srcListLanguagesFilter.getText().trim();
+        if (keyword.isEmpty() && language.isEmpty()) {
+            for (String appLabel : fullAppMap.keySet()) {
+                if (dstApps.contains(appLabel)) {
+                    continue; // 既に選択済みのアプリはスキップ
+                }
+                srcList.add(appLabel); // UI List src
+                srcApps.add(appLabel); // memory src
+            }
+        } else {
+            for (String appLabel : fullAppMap.keySet()) {
+                boolean isKeywordValid = true;
+                if (!keyword.isEmpty()) {
+                    if (!appLabel.toLowerCase().contains(keyword.toLowerCase())) {
+                        if (dstApps.contains(appLabel)) {
+                            continue; // 既に選択済みのアプリはスキップ
+                        }
+                        isKeywordValid = false;
+                    }
+                }
+                boolean isLanguageValid = true;
+                if (!language.isEmpty()) {
+                    AppInfo appInfo = fullAppMap.get(appLabel);
+                    if (!appInfo.getLanguageLabel().toLowerCase().contains(language)) {
+                        isLanguageValid = false;
+                    }
+                }
+                if (isKeywordValid && isLanguageValid) {
+                    srcList.add(appLabel);
+                    srcApps.add(appLabel);
+                }
+            }
+        }
+        srcCount.setText(String.valueOf(srcList.getItemCount()));
     }
 
     private void uiUpdateForExclusionButton() {
