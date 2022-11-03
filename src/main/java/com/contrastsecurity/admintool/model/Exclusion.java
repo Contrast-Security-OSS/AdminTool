@@ -271,6 +271,54 @@ public class Exclusion {
         this.remarks = remarks;
     }
 
+    public List<String> getCsvValues() {
+        List<String> csvValues = new ArrayList<String>();
+        csvValues.add(this.name);
+        csvValues.add(this.type);
+        csvValues.add(this.input_type);
+        csvValues.add(this.input_name);
+        csvValues.add(String.valueOf(this.all_rules));
+        csvValues.add(String.valueOf(this.all_assessment_rules));
+        csvValues.add(String.valueOf(this.all_protection_rules));
+        csvValues.add(this.url_pattern_type);
+        if (this.codes != null && !this.codes.isEmpty()) {
+            Collections.sort(this.codes);
+            csvValues.add(String.join(", ", this.codes));
+        } else {
+            csvValues.add("");
+        }
+        if (this.urls != null && !this.urls.isEmpty()) {
+            Collections.sort(this.urls);
+            if (this.replaceBef != null && this.replaceAft != null) {
+                csvValues.add(String.join(", ", this.urls.stream().map(s -> s.replaceAll(this.replaceBef, this.replaceAft)).collect(Collectors.toList())));
+            } else {
+                csvValues.add(String.join(", ", this.urls));
+            }
+        } else {
+            csvValues.add("");
+        }
+        if (this.assessment_rules != null && !this.assessment_rules.isEmpty()) {
+            Collections.sort(this.assessment_rules);
+            csvValues.add(String.join(", ", this.assessment_rules.stream().map(r -> r.getName()).collect(Collectors.toList())));
+        } else {
+            csvValues.add("");
+        }
+        if (this.protection_rules != null && !this.protection_rules.isEmpty()) {
+            Collections.sort(this.protection_rules);
+            csvValues.add(String.join(", ", this.protection_rules.stream().map(r -> r.getUuid()).collect(Collectors.toList())));
+        } else {
+            csvValues.add("");
+        }
+        csvValues.add((this.queue_pattern_type != null ? this.queue_pattern_type : "ALL"));
+        if (this.queues != null && !this.queues.isEmpty()) {
+            Collections.sort(this.queues);
+            csvValues.add(String.join(", ", this.queues));
+        } else {
+            csvValues.add("");
+        }
+        return csvValues;
+    }
+
     @Override
     public String toString() {
         List<String> strList = new ArrayList<String>();

@@ -23,19 +23,34 @@
 
 package com.contrastsecurity.admintool;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.exec.OS;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -43,15 +58,22 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import com.contrastsecurity.admintool.model.Exclusion;
+
 public class ExclusionCompareResultDialog extends Dialog {
 
+    private AppInfo appInfo;
     private List<String> problemStrs;
+    private List<Exclusion> problemExclusions;
     private Table table;
     private Label diffCount;
+    private Button csvExpBtn;
 
-    public ExclusionCompareResultDialog(Shell parentShell, List<String> problemStrs) {
+    public ExclusionCompareResultDialog(Shell parentShell, AppInfo appInfo, List<String> problemStrs, List<Exclusion> problemExclusions) {
         super(parentShell);
+        this.appInfo = appInfo;
         this.problemStrs = problemStrs;
+        this.problemExclusions = problemExclusions;
     }
 
     @Override
@@ -86,6 +108,47 @@ public class ExclusionCompareResultDialog extends Dialog {
         column1.setText("存在しない例外");
 
         problemStrs.forEach(str -> addColToTable(str, -1));
+
+        csvExpBtn = new Button(composite, SWT.PUSH);
+        GridData csvExpBtnGrDt = new GridData(GridData.FILL_HORIZONTAL);
+        csvExpBtn.setLayoutData(csvExpBtnGrDt);
+        csvExpBtn.setText("CSVエクスポート");
+        csvExpBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dialog = new DirectoryDialog(getShell());
+                dialog.setText("出力先フォルダを指定してください。");
+                String dir = dialog.open();
+                if (dir == null) {
+                    return;
+                }
+                String fileName = appInfo.getAppName() + "_diff.csv";
+                List<List<String>> csvList = new ArrayList<List<String>>();
+                for (Exclusion ex : problemExclusions) {
+                    csvList.add(ex.getCsvValues());
+                }
+                String csv_encoding = Main.CSV_WIN_ENCODING;
+                if (OS.isFamilyMac()) {
+                    csv_encoding = Main.CSV_MAC_ENCODING;
+                }
+                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir + "\\" + fileName)), csv_encoding))) {
+                    CSVPrinter printer = CSVFormat.EXCEL.print(bw);
+                    String[] headerArray = { "name", "type", "input_type", "input_name", "all_rules", "all_assessment_rules", "all_protection_rules", "url_pattern_type", "codes",
+                            "urls", "assessment_rules", "protection_rules", "queue_pattern_type", "queues" };
+                    printer.printRecord(Arrays.asList(headerArray));
+                    for (List<String> csvLine : csvList) {
+                        printer.printRecord(csvLine);
+                    }
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                getShell().getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        MessageDialog.openInformation(getShell(), "例外のインポート済み確認結果", String.format("CSVファイルを出力しました。\r\n%s", dir + "\\" + fileName));
+                    }
+                });
+            }
+        });
 
         return composite;
     }

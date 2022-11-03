@@ -121,9 +121,12 @@ public class ExclusionCompareWithProgress implements IRunnableWithProgress {
         List<String> impExclusionStrs = impExclusions.stream().map(ex -> ex.toString()).collect(Collectors.toList());
         List<String> expExclusionStrs = expExclusions.stream().map(ex -> ex.toString()).collect(Collectors.toList());
         List<String> problemStrs = new ArrayList<String>();
-        for (String str : impExclusionStrs) {
+        List<Exclusion> problemExclusions = new ArrayList<Exclusion>();
+        for (int i = 0; i < impExclusionStrs.size(); i++) {
+            String str = impExclusionStrs.get(i);
             if (!expExclusionStrs.contains(str)) {
                 problemStrs.add(str);
+                problemExclusions.add(impExclusions.get(i));
             }
         }
 
@@ -134,7 +137,7 @@ public class ExclusionCompareWithProgress implements IRunnableWithProgress {
                 }
             });
         } else {
-            ExclusionCompareResultDialog dialog = new ExclusionCompareResultDialog(shell, problemStrs);
+            ExclusionCompareResultDialog dialog = new ExclusionCompareResultDialog(shell, appInfo, problemStrs, problemExclusions);
             this.shell.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     int result = dialog.open();

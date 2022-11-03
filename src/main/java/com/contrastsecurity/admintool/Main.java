@@ -113,6 +113,9 @@ public class Main implements PropertyChangeListener {
     // 本ツールをリリース用にコンパイルする際はchangemeを別の文字列に置き換えてください。
     public static final String MASTER_PASSWORD = "changeme!";
 
+    public static final String CSV_WIN_ENCODING = "Shift_JIS";
+    public static final String CSV_MAC_ENCODING = "UTF-8";
+
     public static final int MINIMUM_SIZE_WIDTH = 640;
     public static final int MINIMUM_SIZE_HEIGHT = 640;
 
