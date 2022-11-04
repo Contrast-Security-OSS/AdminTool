@@ -80,7 +80,7 @@ Eclipseでプロジェクトをリフレッシュすると、あとは実行でc
     launch4jのsign4jを使用します。
     ```powershell
     cd C:\Program Files (x86)\launch4j\sign4j
-    sign4j.exe java -jar jsign-2.0.jar --alias 1 --keystore C:\Users\turbou\Desktop\AdminTool_work\XXXXX.pfx --storepass [パスワード] C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool_1.0.1.exe
+    sign4j.exe java -jar jsign-2.0.jar --alias 1 --keystore C:\Users\turbou\Desktop\AdminTool_work\XXXXX.pfx --storepass [パスワード] C:\Users\turbou\Desktop\AdminTool_work\common\AdminTool_1.0.2.exe
     ```
   - 署名の確認  
     署名の確認については、exeを右クリック->プロパティ で確認できます。
